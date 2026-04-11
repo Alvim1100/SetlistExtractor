@@ -112,7 +112,7 @@ class SetlistScraper:
             
             for workers in tqdm(concurrent.futures.as_completed(workers), total=len(workers), desc="Extraindo Shows"):
                 
-                time.sleep(random.uniform(1.0, 2.0))
+                time.sleep(random.uniform(0.5, 1))  # Pausa aleatória entre 0.5 e 1.5 segundos para evitar sobrecarga
                 
                 details = workers.result()
                 if details:
@@ -120,9 +120,8 @@ class SetlistScraper:
 
         # Cria a tabela e remove duplicatas por segurança
         df = pd.DataFrame(all_shows_data)
-        if not df.empty:
-            df = df.drop_duplicates(subset=['url'])
-
+        df = df.drop_duplicates(subset=["url"])
+        df = df.drop(columns=["url"], errors="ignore")
         return df
 
 url_digitada = input("Enter the URL you want to scrape: ")
